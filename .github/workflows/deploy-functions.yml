@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - development
     paths:
       - 'functions/**'
   workflow_dispatch: # Manual trigger option
@@ -15,7 +16,6 @@ on:
         type: choice
         options:
           - development
-          - staging
           - production
       debug_mode:
         description: "Enable debug mode"
@@ -70,10 +70,13 @@ jobs:
     name: Deploy Firebase Functions
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development' || github.event_name == 'workflow_dispatch'
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || github.event.inputs.environment || 'development' }}
     env:
-      DATABASE_ID: 'development' # Default to development, can be overridden by secrets
-      STOREAGE_BUCKET: 'snapmeal-sa2e9.firebasestorage.app' # Ensure this secret is set in GitHub Secrets
+      ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'production' || github.event.inputs.environment || 'development' }}
+      #DATABASE_ID: ${{ secrets.DATABASE_ID }}
+      #STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+      #FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
 
     steps:
       - name: Checkout code
@@ -99,7 +102,7 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
       - name: Create Firebase service account file
         run: |
@@ -108,12 +111,13 @@ jobs:
       - name: Create Environment 
         run: |
           echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" > functions/.env
-          echo "ENVIRONMENT=${{ github.event.inputs.environment || 'production' }}" >> functions/.env
+          echo "ENVIRONMENT=${{ env.ENVIRONMENT }}" >> functions/.env
           echo "DEBUG_MODE=${{ github.event.inputs.debug_mode || 'false' }}" >> functions/.env
           echo "MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}" >> functions/.env
           echo "MAILGUN_DOMAIN=${{ secrets.MAILGUN_DOMAIN }}" >> functions/.env
-          echo "DATABASE_ID=${{ env.DATABASE_ID || 'development' }}" >> functions/.env
-          echo "STORAGE_BUCKET=${{ env.STOREAGE_BUCKET }}" >> functions/.env
+          echo "DATABASE_ID=${{ env.DATABASE_ID }}" >> functions/.env
+          echo "STORAGE_BUCKET=${{ env.STORAGE_BUCKET }}" >> functions/.env
+          echo "FIREBASE_PROJECT_ID=${{ env.FIREBASE_PROJECT_ID }}" >> functions/.env
      
       - name: Build functions
         run: |
@@ -123,7 +127,9 @@ jobs:
       - name: Deploy to Firebase
         env: 
           DATABASE_ID: ${{ env.DATABASE_ID }}
-          STORAGE_BUCKET: ${{ env.STOREAGE_BUCKET }}
+          STORAGE_BUCKET: ${{ env.STORAGE_BUCKET }}
+          FIREBASE_PROJECT_ID: ${{ env.FIREBASE_PROJECT_ID }}
         run: |
           cd functions
+          npx firebase use ${{ env.FIREBASE_PROJECT_ID }}
           npx firebase deploy --only functions --force
