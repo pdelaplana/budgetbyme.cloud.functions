@@ -12,11 +12,11 @@ on:
       environment:
         description: "Environment to deploy to"
         required: true
-        default: "development"
+        default: "dev"
         type: choice
         options:
-          - development
-          - production
+          - dev
+          - prod
       debug_mode:
         description: "Enable debug mode"
         required: false
@@ -71,9 +71,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development' || github.event_name == 'workflow_dispatch'
-    environment: ${{ github.ref == 'refs/heads/main' && 'production' || github.event.inputs.environment || 'development' }}
+    environment: ${{ github.ref == 'refs/heads/main' && 'prod' || github.event.inputs.environment || 'dev' }}
     env:
-      ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'production' || github.event.inputs.environment || 'development' }}
+      ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'prod' || github.event.inputs.environment || 'dev' }}
       #DATABASE_ID: ${{ secrets.DATABASE_ID }}
       #STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
       #FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
