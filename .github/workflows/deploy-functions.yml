@@ -74,9 +74,9 @@ jobs:
     environment: ${{ github.ref == 'refs/heads/main' && 'prod' || github.event.inputs.environment || 'dev' }}
     env:
       ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'prod' || github.event.inputs.environment || 'dev' }}
-      #DATABASE_ID: ${{ secrets.DATABASE_ID }}
-      #STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-      #FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      DATABASE_ID: ${{ vars.DATABASE_ID }}
+      STORAGE_BUCKET: ${{ vars.STORAGE_BUCKET }}
+      FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
 
     steps:
       - name: Checkout code
