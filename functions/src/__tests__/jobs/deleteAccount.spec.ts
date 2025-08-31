@@ -24,10 +24,10 @@ jest.mock('../../config/firebase', () => {
       db: mockDb,
       auth: mockAdmin.auth(),
       storage: mockAdmin.storage(),
-      currentDatabaseId: 'development',
+      currentDatabaseId: '(default)',
     })),
     databaseId: {
-      value: jest.fn().mockReturnValue('development'),
+      value: jest.fn().mockReturnValue('(default)'),
     },
     storageBucket: {
       value: jest.fn().mockReturnValue('test-bucket'),
@@ -171,7 +171,7 @@ describe('deleteAccount job', () => {
       db: mockDb,
       auth: mockAuth,
       storage: mockStorage,
-      currentDatabaseId: 'development',
+      currentDatabaseId: '(default)',
     });
 
     mockWorkspaceDocRef.get.mockResolvedValue(mockWorkspaceSnapshot);
@@ -312,7 +312,7 @@ describe('deleteAccount job', () => {
       db: mockDb,
       auth: mockAuth,
       storage: mockStorage,
-      currentDatabaseId: 'development',
+      currentDatabaseId: '(default)',
     });
 
     // Call the function

@@ -26,10 +26,10 @@ jest.mock('../../config/firebase', () => {
       db: mockDb,
       auth: mockAdmin.auth(),
       storage: mockAdmin.storage(),
-      currentDatabaseId: 'development',
+      currentDatabaseId: '(defualt)',
     })),
     databaseId: {
-      value: jest.fn().mockReturnValue('development'),
+      value: jest.fn().mockReturnValue('(default)'),
     },
     storageBucket: {
       value: jest.fn().mockReturnValue('test-bucket'),
@@ -175,7 +175,7 @@ describe('exportData job', () => {
       admin: mockAdmin,
       db: mockDb,
       storage: mockStorage,
-      currentDatabaseId: 'development',
+      currentDatabaseId: '(default)',
     });
 
     mockWorkspaceRef.get.mockResolvedValue(mockWorkspaceSnapshot);
