@@ -117,7 +117,7 @@ jobs:
           echo "MAILGUN_DOMAIN=${{ secrets.MAILGUN_DOMAIN }}" >> functions/.env
           echo "DATABASE_ID=${{ env.DATABASE_ID }}" >> functions/.env
           echo "STORAGE_BUCKET=${{ env.STORAGE_BUCKET }}" >> functions/.env
-          echo "FIREBASE_PROJECT_ID=${{ env.FIREBASE_PROJECT_ID }}" >> functions/.env
+          echo "PROJECT_ID=${{ env.FIREBASE_PROJECT_ID }}" >> functions/.env
      
       - name: Build functions
         run: |
