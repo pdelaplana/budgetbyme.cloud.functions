@@ -9,7 +9,6 @@ import type { Job } from '../types/jobTypes';
 // Create the trigger with environment-specific database
 const triggerOptions = {
   document: 'jobs/{jobId}',
-  database: '(default)', // TODO: How do we configure this at deployment time?
 };
 
 export const processJob = onDocumentCreated(triggerOptions, async (event) => {
