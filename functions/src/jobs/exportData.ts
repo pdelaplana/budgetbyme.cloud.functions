@@ -54,7 +54,7 @@ export const exportData = async ({ userId, userEmail }: { userId: string; userEm
                 expense_payment_date: expenseData.oneOffPayment.date?.toDate(),
                 expense_payment_method: expenseData.oneOffPayment.method,
               }
-            : expenseData.paymentSchedule.length > 0
+            : expenseData.paymentSchedule?.length > 0
               ? {
                   expense_payment_name:
                     expenseData.paymentSchedule[expenseData.paymentSchedule.length - 1].name,
